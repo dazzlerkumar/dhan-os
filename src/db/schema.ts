@@ -23,7 +23,7 @@ export const paymentKindEnum = pgEnum("payment_kind", [
   "credit",
   "cash",
 ]);
-export const flowEnum = pgEnum("flow", ["income", "expense"]);
+export const flowEnum = pgEnum("flow", ["income", "expense", "invest"]);
 export const assetClassEnum = pgEnum("asset_class", [
   "savings",
   "fd_rd",
@@ -49,6 +49,9 @@ export const categories = pgTable("categories", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;
+
 // ────────────────────────────────────────────────────────────
 // Payment Methods
 // One row per actual instrument, not per bank — "HDFC" alone isn't
@@ -66,6 +69,9 @@ export const paymentMethods = pgTable("payment_methods", {
   dueDay: integer("due_day"),
   active: boolean("active").notNull().default(true),
 });
+
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type NewPaymentMethod = typeof paymentMethods.$inferInsert;
 
 // ────────────────────────────────────────────────────────────
 // Credit Card Statements

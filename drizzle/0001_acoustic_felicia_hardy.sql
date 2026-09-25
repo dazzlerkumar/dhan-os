@@ -1,0 +1,1 @@
+ALTER TYPE "public"."flow" ADD VALUE 'invest';
