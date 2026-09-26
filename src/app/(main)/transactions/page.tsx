@@ -8,6 +8,8 @@ import type {
   TransactionItem,
   TransactionSummary,
 } from "@/types/transactions";
+import ExpenseBreakdown from "./_components/expense-breakdown";
+import RecurringSpendsCard from "./_components/recurring-spends-card";
 import TransactionMetrics from "./_components/transaction-metrics";
 import TransactionTable from "./_components/transaction-table";
 import TransactionsHeader from "./_components/transactions-header";
@@ -319,7 +321,15 @@ function TransactionsContent() {
 
         {/* Side Rail */}
         <div className="space-y-6 lg:col-span-4">
-          {/* Will contain Expense Breakdown and Subscriptions */}
+          <ExpenseBreakdown selectedMonth={selectedMonth} />
+          <RecurringSpendsCard
+            categories={categories}
+            paymentMethods={paymentMethods}
+            onTransactionLogged={() => {
+              fetchTransactions();
+              fetchSummary(selectedMonth);
+            }}
+          />
         </div>
       </div>
     </PageWrapper>
