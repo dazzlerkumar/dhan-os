@@ -68,6 +68,7 @@ export const paymentMethods = pgTable("payment_methods", {
   color: text("color"), // hex, matches the color-dot list in settings
   statementDay: integer("statement_day"), // credit cards only, nullable otherwise
   dueDay: integer("due_day"),
+  sortOrder: integer("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
 });
 

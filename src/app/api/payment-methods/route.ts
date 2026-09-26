@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { asc } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { paymentMethods } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { createPaymentMethodSchema } from "@/lib/validations/payment-method";
 
-export async function GET() {
+export async function GET(request: Request) {
   let session: unknown;
   try {
     session = await getSession();
@@ -17,12 +17,19 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const allPaymentMethods = await db
+  const { searchParams } = new URL(request.url);
+  const activeOnly = searchParams.get("active") === "true";
+
+  const query = db
     .select()
     .from(paymentMethods)
-    .orderBy(asc(paymentMethods.name));
+    .orderBy(asc(paymentMethods.sortOrder), asc(paymentMethods.id));
 
-  return NextResponse.json(allPaymentMethods, { status: 200 });
+  const allMethods = activeOnly
+    ? await query.where(eq(paymentMethods.active, true))
+    : await query;
+
+  return NextResponse.json(allMethods, { status: 200 });
 }
 
 export async function POST(request: Request) {
@@ -50,11 +57,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
-  const { name, issuer, kind, color, statementDay, dueDay, active } =
-    parseResult.data;
+  const { name, issuer, kind, color, statementDay, dueDay } = parseResult.data;
+
+  let sortOrder = parseResult.data.sortOrder;
+  if (sortOrder === undefined) {
+    const [maxRow] = await db
+      .select({ maxOrder: paymentMethods.sortOrder })
+      .from(paymentMethods)
+      .orderBy(desc(paymentMethods.sortOrder))
+      .limit(1);
+    sortOrder = maxRow ? maxRow.maxOrder + 1 : 0;
+  }
 
   try {
-    const [newPaymentMethod] = await db
+    const [newMethod] = await db
       .insert(paymentMethods)
       .values({
         name,
@@ -63,11 +79,12 @@ export async function POST(request: Request) {
         color: color ?? null,
         statementDay: statementDay ?? null,
         dueDay: dueDay ?? null,
-        active: active ?? true,
+        sortOrder,
+        active: true,
       })
       .returning();
 
-    return NextResponse.json(newPaymentMethod, { status: 201 });
+    return NextResponse.json(newMethod, { status: 201 });
   } catch {
     return NextResponse.json(
       { error: "Failed to create payment method" },

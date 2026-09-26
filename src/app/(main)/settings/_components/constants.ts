@@ -7,6 +7,27 @@ export interface CategoryItem {
   createdAt?: string;
 }
 
+export type PaymentKind = "upi" | "debit" | "credit" | "cash";
+
+export interface PaymentMethodItem {
+  id: number;
+  name: string;
+  issuer: string | null;
+  kind: PaymentKind;
+  color: string | null;
+  statementDay: number | null;
+  dueDay: number | null;
+  sortOrder: number;
+  active: boolean;
+}
+
+export const PAYMENT_KINDS: { label: string; value: PaymentKind }[] = [
+  { label: "UPI", value: "upi" },
+  { label: "Debit", value: "debit" },
+  { label: "Credit", value: "credit" },
+  { label: "Cash", value: "cash" },
+];
+
 export const CATEGORY_PALETTE = [
   { label: "Violet", hex: "#713CE9" },
   { label: "Coral", hex: "#E9713C" },

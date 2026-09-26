@@ -27,8 +27,8 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const paymentMethodId = Number.parseInt(id, 10);
-  if (Number.isNaN(paymentMethodId) || paymentMethodId <= 0) {
+  const methodId = Number.parseInt(id, 10);
+  if (Number.isNaN(methodId) || methodId <= 0) {
     return NextResponse.json(
       { error: "Invalid payment method ID" },
       { status: 400 },
@@ -56,9 +56,9 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const [existing] = await db
-    .select({ id: paymentMethods.id })
+    .select()
     .from(paymentMethods)
-    .where(eq(paymentMethods.id, paymentMethodId))
+    .where(eq(paymentMethods.id, methodId))
     .limit(1);
 
   if (!existing) {
@@ -68,11 +68,35 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
   }
 
+  if (parseResult.data.kind && parseResult.data.kind !== existing.kind) {
+    const [referencingTx] = await db
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(eq(transactions.paymentMethodId, methodId))
+      .limit(1);
+
+    const [referencingStmt] = await db
+      .select({ id: creditCardStatements.id })
+      .from(creditCardStatements)
+      .where(eq(creditCardStatements.paymentMethodId, methodId))
+      .limit(1);
+
+    if (referencingTx || referencingStmt) {
+      return NextResponse.json(
+        {
+          error:
+            "Can't change kind on a payment method with existing transactions.",
+        },
+        { status: 400 },
+      );
+    }
+  }
+
   try {
     const [updated] = await db
       .update(paymentMethods)
       .set(parseResult.data)
-      .where(eq(paymentMethods.id, paymentMethodId))
+      .where(eq(paymentMethods.id, methodId))
       .returning();
 
     return NextResponse.json(updated, { status: 200 });
@@ -97,8 +121,8 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const paymentMethodId = Number.parseInt(id, 10);
-  if (Number.isNaN(paymentMethodId) || paymentMethodId <= 0) {
+  const methodId = Number.parseInt(id, 10);
+  if (Number.isNaN(methodId) || methodId <= 0) {
     return NextResponse.json(
       { error: "Invalid payment method ID" },
       { status: 400 },
@@ -108,7 +132,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const [existing] = await db
     .select({ id: paymentMethods.id })
     .from(paymentMethods)
-    .where(eq(paymentMethods.id, paymentMethodId))
+    .where(eq(paymentMethods.id, methodId))
     .limit(1);
 
   if (!existing) {
@@ -118,54 +142,54 @@ export async function DELETE(_request: Request, context: RouteContext) {
     );
   }
 
-  const [referencingTx] = await db
+  const referencingTxs = await db
     .select({ id: transactions.id })
     .from(transactions)
-    .where(eq(transactions.paymentMethodId, paymentMethodId))
-    .limit(1);
+    .where(eq(transactions.paymentMethodId, methodId));
 
-  if (referencingTx) {
-    return NextResponse.json(
-      {
-        error:
-          "Cannot delete payment method referenced by existing transactions",
-      },
-      { status: 409 },
-    );
-  }
-
-  const [referencingStatement] = await db
+  const referencingStmts = await db
     .select({ id: creditCardStatements.id })
     .from(creditCardStatements)
-    .where(eq(creditCardStatements.paymentMethodId, paymentMethodId))
-    .limit(1);
+    .where(eq(creditCardStatements.paymentMethodId, methodId));
 
-  if (referencingStatement) {
+  const txCount = referencingTxs.length;
+  const stmtCount = referencingStmts.length;
+
+  if (txCount > 0 || stmtCount > 0) {
+    let detail = "";
+    if (txCount > 0 && stmtCount > 0) {
+      detail = `${txCount} transaction${txCount > 1 ? "s" : ""} and ${stmtCount} statement${stmtCount > 1 ? "s" : ""}`;
+    } else if (txCount > 0) {
+      detail = `${txCount} transaction${txCount > 1 ? "s" : ""}`;
+    } else {
+      detail = `${stmtCount} statement${stmtCount > 1 ? "s" : ""}`;
+    }
+
     return NextResponse.json(
       {
-        error:
-          "Cannot delete payment method referenced by credit card statements",
+        error: `Cannot delete — ${detail} use this payment method.`,
+        txCount,
+        stmtCount,
       },
       { status: 409 },
     );
   }
 
-  const [referencingTemplate] = await db
+  const referencingTemplates = await db
     .select({ id: recurringTemplates.id })
     .from(recurringTemplates)
-    .where(eq(recurringTemplates.paymentMethodId, paymentMethodId))
-    .limit(1);
+    .where(eq(recurringTemplates.paymentMethodId, methodId));
 
-  if (referencingTemplate) {
+  if (referencingTemplates.length > 0) {
     return NextResponse.json(
       {
-        error: "Cannot delete payment method referenced by recurring templates",
+        error: `Cannot delete — ${referencingTemplates.length} recurring template${referencingTemplates.length > 1 ? "s" : ""} use this payment method.`,
       },
       { status: 409 },
     );
   }
 
-  await db.delete(paymentMethods).where(eq(paymentMethods.id, paymentMethodId));
+  await db.delete(paymentMethods).where(eq(paymentMethods.id, methodId));
 
   return NextResponse.json(
     { message: "Payment method deleted successfully" },

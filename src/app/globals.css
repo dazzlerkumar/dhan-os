@@ -100,7 +100,9 @@
   --sidebar-ring: oklch(0.536 0.245 289.44);
 
   /* Fonts */
-  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans:
+    var(--font-outfit), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
