@@ -10,6 +10,7 @@ import type {
 } from "@/types/transactions";
 import ExpenseBreakdown from "./_components/expense-breakdown";
 import RecurringSpendsCard from "./_components/recurring-spends-card";
+import TransactionDialog from "./_components/transaction-dialog";
 import TransactionMetrics from "./_components/transaction-metrics";
 import TransactionTable from "./_components/transaction-table";
 import TransactionsHeader from "./_components/transactions-header";
@@ -59,6 +60,9 @@ function TransactionsContent() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [isExporting, setIsExporting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] =
+    useState<TransactionItem | null>(null);
 
   // Load categories and payment methods
   useEffect(() => {
@@ -198,12 +202,14 @@ function TransactionsContent() {
     }
   };
 
-  const handleEditTransaction = (_tx: TransactionItem) => {
-    // Will be wired up in modal phase
+  const handleEditTransaction = (tx: TransactionItem) => {
+    setEditingTransaction(tx);
+    setIsDialogOpen(true);
   };
 
   const handleOpenAddModal = () => {
-    // Will be wired up in modal phase
+    setEditingTransaction(null);
+    setIsDialogOpen(true);
   };
 
   const handleExport = async () => {
@@ -332,6 +338,21 @@ function TransactionsContent() {
           />
         </div>
       </div>
+
+      <TransactionDialog
+        isOpen={isDialogOpen}
+        onClose={() => {
+          setIsDialogOpen(false);
+          setEditingTransaction(null);
+        }}
+        transaction={editingTransaction}
+        categories={categories}
+        paymentMethods={paymentMethods}
+        onSuccess={() => {
+          fetchTransactions();
+          fetchSummary(selectedMonth);
+        }}
+      />
     </PageWrapper>
   );
 }
