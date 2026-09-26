@@ -46,6 +46,7 @@ export const categories = pgTable("categories", {
   name: text("name").notNull().unique(), // "Grocery", "Electricity Bill", "Sibling Education"...
   defaultType: categoryTypeEnum("default_type").notNull().default("variable"),
   color: text("color"), // hex, matches the color-dot list in settings + chart legend
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

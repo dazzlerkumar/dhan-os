@@ -93,9 +93,7 @@
         "categories_name_unique": {
           "name": "categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -178,12 +176,8 @@
           "name": "credit_card_statements_payment_method_id_payment_methods_id_fk",
           "tableFrom": "credit_card_statements",
           "tableTo": "payment_methods",
-          "columnsFrom": [
-            "payment_method_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["payment_method_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -350,9 +344,7 @@
         "net_worth_snapshots_month_unique": {
           "name": "net_worth_snapshots_month_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "month"
-          ]
+          "columns": ["month"]
         }
       },
       "policies": {},
@@ -483,12 +475,8 @@
           "name": "recurring_templates_category_id_categories_id_fk",
           "tableFrom": "recurring_templates",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -496,12 +484,8 @@
           "name": "recurring_templates_payment_method_id_payment_methods_id_fk",
           "tableFrom": "recurring_templates",
           "tableTo": "payment_methods",
-          "columnsFrom": [
-            "payment_method_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["payment_method_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -648,12 +632,8 @@
           "name": "transactions_category_id_categories_id_fk",
           "tableFrom": "transactions",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -661,12 +641,8 @@
           "name": "transactions_payment_method_id_payment_methods_id_fk",
           "tableFrom": "transactions",
           "tableTo": "payment_methods",
-          "columnsFrom": [
-            "payment_method_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["payment_method_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -682,47 +658,27 @@
     "public.asset_class": {
       "name": "asset_class",
       "schema": "public",
-      "values": [
-        "savings",
-        "fd_rd",
-        "mutual_fund",
-        "stock"
-      ]
+      "values": ["savings", "fd_rd", "mutual_fund", "stock"]
     },
     "public.category_type": {
       "name": "category_type",
       "schema": "public",
-      "values": [
-        "fixed",
-        "variable"
-      ]
+      "values": ["fixed", "variable"]
     },
     "public.flow": {
       "name": "flow",
       "schema": "public",
-      "values": [
-        "income",
-        "expense",
-        "invest"
-      ]
+      "values": ["income", "expense", "invest"]
     },
     "public.payment_kind": {
       "name": "payment_kind",
       "schema": "public",
-      "values": [
-        "upi",
-        "debit",
-        "credit",
-        "cash"
-      ]
+      "values": ["upi", "debit", "credit", "cash"]
     },
     "public.tx_source": {
       "name": "tx_source",
       "schema": "public",
-      "values": [
-        "web",
-        "shortcut"
-      ]
+      "values": ["web", "shortcut"]
     }
   },
   "schemas": {},

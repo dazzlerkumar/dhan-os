@@ -1,6 +1,6 @@
 {
-  "id": "ea0a3031-1ea5-4e8d-8608-c1bef9c12753",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8326f286-8ce1-4328-9b38-b9e923b1e01b",
+  "prevId": "bd93281c-538b-4771-87c5-58920d179edc",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -77,6 +77,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -668,7 +675,7 @@
     "public.flow": {
       "name": "flow",
       "schema": "public",
-      "values": ["income", "expense"]
+      "values": ["income", "expense", "invest"]
     },
     "public.payment_kind": {
       "name": "payment_kind",

@@ -15,6 +15,13 @@
       "when": 1790376073738,
       "tag": "0001_acoustic_felicia_hardy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790453688901,
+      "tag": "0002_dark_shinko_yamashiro",
+      "breakpoints": true
     }
   ]
 }
