@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { categories } from "@/db/schema";
 import { getSession } from "@/lib/auth";
@@ -20,7 +20,7 @@ export async function GET() {
   const allCategories = await db
     .select()
     .from(categories)
-    .orderBy(asc(categories.name));
+    .orderBy(asc(categories.sortOrder), asc(categories.id));
 
   return NextResponse.json(allCategories, { status: 200 });
 }
@@ -60,9 +60,19 @@ export async function POST(request: Request) {
 
   if (existing) {
     return NextResponse.json(
-      { error: "Category with this name already exists" },
+      { error: `A category named "${name}" already exists.` },
       { status: 409 },
     );
+  }
+
+  let sortOrder = parseResult.data.sortOrder;
+  if (sortOrder === undefined) {
+    const [maxRow] = await db
+      .select({ maxOrder: categories.sortOrder })
+      .from(categories)
+      .orderBy(desc(categories.sortOrder))
+      .limit(1);
+    sortOrder = maxRow ? maxRow.maxOrder + 1 : 0;
   }
 
   try {
@@ -72,6 +82,7 @@ export async function POST(request: Request) {
         name,
         defaultType,
         color: color ?? null,
+        sortOrder,
       })
       .returning();
 

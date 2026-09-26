@@ -132,28 +132,30 @@ export async function DELETE(_request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Category not found" }, { status: 404 });
   }
 
-  const [referencingTx] = await db
+  const referencingTxs = await db
     .select({ id: transactions.id })
     .from(transactions)
-    .where(eq(transactions.categoryId, categoryId))
-    .limit(1);
+    .where(eq(transactions.categoryId, categoryId));
 
-  if (referencingTx) {
+  if (referencingTxs.length > 0) {
     return NextResponse.json(
-      { error: "Cannot delete category referenced by existing transactions" },
+      {
+        error: `Cannot delete — ${referencingTxs.length} transaction${referencingTxs.length > 1 ? "s" : ""} use this category.`,
+      },
       { status: 409 },
     );
   }
 
-  const [referencingTemplate] = await db
+  const referencingTemplates = await db
     .select({ id: recurringTemplates.id })
     .from(recurringTemplates)
-    .where(eq(recurringTemplates.categoryId, categoryId))
-    .limit(1);
+    .where(eq(recurringTemplates.categoryId, categoryId));
 
-  if (referencingTemplate) {
+  if (referencingTemplates.length > 0) {
     return NextResponse.json(
-      { error: "Cannot delete category referenced by recurring templates" },
+      {
+        error: `Cannot delete — ${referencingTemplates.length} recurring template${referencingTemplates.length > 1 ? "s" : ""} use this category.`,
+      },
       { status: 409 },
     );
   }

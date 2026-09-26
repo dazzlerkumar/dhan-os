@@ -3,5 +3,5 @@ export interface Session {
 }
 
 export async function getSession(): Promise<Session | null> {
-  return null;
+  return { userId: 1 }; // Hardcoded for now
 }

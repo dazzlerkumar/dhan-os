@@ -45,10 +45,11 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${isActive
-                    ? "bg-foreground text-background shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                    }`}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-foreground text-background shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -120,10 +121,11 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition-all ${isActive
-                  ? "bg-foreground text-background shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-                  }`}
+                className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  isActive
+                    ? "bg-foreground text-background shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {item.label}
               </Link>

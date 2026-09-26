@@ -8,7 +8,7 @@ interface PageWrapperProps {
 
 export default function PageWrapper({ children, className }: PageWrapperProps) {
   return (
-    <div className={cn("animate-fade-in min-w-0 space-y-6 max-w-7xl mx-auto", className)}>
+    <div className={cn("animate-fade-in min-w-0 space-y-6 max-w-7xl mx-auto py-8 px-4", className)}>
       {children}
     </div>
   );

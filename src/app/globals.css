@@ -109,10 +109,10 @@
   --background: oklch(0.015 0 0);
   --foreground: oklch(0.96 0.005 289.4);
 
-  /* Surfaces & Popovers: #1b1a1d */
-  --card: oklch(0.208 0.005 315.5);
+  /* Surfaces & Popovers: #202024 */
+  --card: oklch(0.24 0.006 289.4);
   --card-foreground: oklch(0.96 0.005 289.4);
-  --popover: oklch(0.208 0.005 315.5);
+  --popover: oklch(0.24 0.006 289.4);
   --popover-foreground: oklch(0.96 0.005 289.4);
 
   /* Primary Brand: #713ce9 (Slight lightness bump for dark-mode contrast) */
