@@ -142,6 +142,9 @@ export const transactions = pgTable(
     paymentMethodId: integer("payment_method_id").references(
       () => paymentMethods.id,
     ),
+    recurringTemplateId: integer("recurring_template_id").references(
+      () => recurringTemplates.id,
+    ),
     note: text("note"),
     source: txSourceEnum("source").notNull().default("web"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -153,6 +156,9 @@ export const transactions = pgTable(
     paymentMethodIdx: index("tx_payment_method_idx").on(t.paymentMethodId),
   }),
 );
+
+export type Transaction = typeof transactions.$inferSelect;
+export type NewTransaction = typeof transactions.$inferInsert;
 
 // ────────────────────────────────────────────────────────────
 // Recurring Templates
@@ -175,6 +181,9 @@ export const recurringTemplates = pgTable("recurring_templates", {
   dayOfMonth: integer("day_of_month"), // for a reminder, not auto-posting
   active: boolean("active").notNull().default(true),
 });
+
+export type RecurringTemplate = typeof recurringTemplates.$inferSelect;
+export type NewRecurringTemplate = typeof recurringTemplates.$inferInsert;
 
 // ────────────────────────────────────────────────────────────
 // Holdings
