@@ -21,7 +21,7 @@ export function formatCurrency(
 }
 
 export function formatMonthDisplay(monthStr: string): string {
-  if (!monthStr || !/^\d{4}-\d{2}$/.test(monthStr)) return monthStr;
+  if (!monthStr || !/^\d{4}-\d{2}(-\d{2})?$/.test(monthStr)) return monthStr;
   const [yearStr, monthNumStr] = monthStr.split("-");
   const year = Number.parseInt(yearStr, 10);
   const month = Number.parseInt(monthNumStr, 10) - 1;
